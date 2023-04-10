@@ -163,14 +163,25 @@ const Main: React.FC = () => {
     }
     // チェックを外した処理
     else {
-      const deleteIndex = c_prefPopulation.findIndex((value) => value.prefName === prefName);
+      //都道府県別人口推移グラフ用state
+      const deleteIndexPref = c_prefPopulation.findIndex((value) => value.prefName === prefName);
       // deleteindexが見つからなかった際の処理
-      if (deleteIndex === -1){
+      if (deleteIndexPref === -1){
         return;
       }
       // deleteindexに基づいて対象を配列から削除
-      c_prefPopulation.splice(deleteIndex, 1);
+      c_prefPopulation.splice(deleteIndexPref, 1);
       setPrefPopulation(c_prefPopulation);
+
+      //人口構成テーブル用state
+      const deleteIndexDemographics = c_demographics.findIndex((value) => value.prefName === prefName);
+      // deleteindexが見つからなかった際の処理
+      if (deleteIndexDemographics === -1){
+        return;
+      }
+      // deleteindexに基づいて対象を配列から削除
+      c_demographics.splice(deleteIndexDemographics, 1);
+      setDemographics(c_demographics);
     }
   };
 
