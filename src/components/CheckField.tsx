@@ -15,8 +15,6 @@ const Styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     flexWrap: "wrap",
     padding: "10px",
-    // justifyContent: "flex-start",
-    // justifySelf: "auto",
     width: '100%',
     maxWidth: '1500px',
     margin: 'auto',
