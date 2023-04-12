@@ -50,14 +50,6 @@ const Graph: React.FC<Props> = ({ populationdata }) => {
         text: "人口数",
       },
     },
-    // ★グラフがごちゃごちゃするので適用見送り
-    // plotOptions: {
-    //   line: {
-    //       dataLabels: {
-    //           enabled: true
-    //       },
-    //   }
-    // },
     // 都道府県を一つも選んでいない場合との分岐条件
     series:
       series.length === 0

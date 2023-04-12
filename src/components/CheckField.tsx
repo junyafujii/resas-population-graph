@@ -22,7 +22,6 @@ const Styles: { [key: string]: React.CSSProperties } = {
   text: { display: "contents", marginLeft: "1em", cursor: "pointer" },
   checkcard: {
     borderRadius: "24px",
-    // border: "solid 2px",
     textAlign: "center",
     padding: "4px",
     margin: "0.5rem",

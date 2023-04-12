@@ -120,7 +120,7 @@ const Table: React.FC<Props> = ({ demographics }) => {
 							<th onClick={() => toggleSort("youngRatio")}>割合(%){getSortIcon("youngRatio")}</th>
 							<th onClick={() => toggleSort("productivePopulation")}>人数(人){getSortIcon("productivePopulation")}</th>
 							<th onClick={() => toggleSort("productiveRatio")}>割合(%){getSortIcon("productiveRatio")}</th>
-							<th onClick={() => toggleSort("elderlyPopulation")}>人数{getSortIcon("elderlyPopulation")}</th>
+							<th onClick={() => toggleSort("elderlyPopulation")}>人数(人){getSortIcon("elderlyPopulation")}</th>
 							<th onClick={() => toggleSort("elderlyRatio")}>割合(%){getSortIcon("elderlyRatio")}</th>
 						</tr>
 					</thead>
