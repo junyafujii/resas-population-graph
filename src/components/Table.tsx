@@ -73,16 +73,6 @@ const Table: React.FC<Props> = ({ demographics }) => {
       setIsAscending(true);
     }
   };
-
-  // ヘッダー情報をテーブル用に加工
-  // const headers = demographics.map(({ data }) => {
-  //   console.log(data);
-  //   const header: JSX.Element[] = [];
-  //   for (let i = 0; i < 4; i++) {
-  //     header.push(<th key={i} colSpan={2}>{data[i].label}</th>);
-  //   }
-  //   return header;
-  // })
   
   const headers = () => {
     const header: JSX.Element[] = [];
