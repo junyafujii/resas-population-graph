@@ -43,15 +43,12 @@ const Main: React.FC = () => {
     { 
       prefName: string;
       data: {
-        year: number;
-        totalPopulation: number;
-        totalIncrease: number;
-        youngPopulation: number;
-        youngRatio: number;
-        productivePopulation: number;
-        productiveRatio: number;
-        elderlyPopulation: number;
-        elderlyRatio: number;
+        label: string;
+        data: {
+          year: number;
+          value: number;
+          rate?: number;
+        }[];
       }[];
     }[]
   >([]);
@@ -101,58 +98,11 @@ const Main: React.FC = () => {
           });
           setPrefPopulation(c_prefPopulation);
 
-          //人口構成テーブル用state
-          let demographicsTableData :{
-            year: number,
-            totalPopulation: number,
-            totalIncrease: number,
-            youngPopulation: number;
-            youngRatio: number;
-            productivePopulation: number;
-            productiveRatio: number;
-            elderlyPopulation: number;
-            elderlyRatio: number;
-          }[] = [];
-
-          let arrayNumber = results.data.result.data[0].data.length;  //APIから取得した年数総数(処理数)
-          let totalData = results.data.result.data[0].data; // 総人口
-          let youngData = results.data.result.data[1].data; // 年少人口
-          let productiveData = results.data.result.data[2].data; // 生産年齢人口
-          let elderlyData = results.data.result.data[3].data; // 老年人口
-
-          for (let i = arrayNumber-1; i >= 0; i--) {
-            // 前年データがある年は増加率を計算
-            if(i !== 0){
-              demographicsTableData.push({
-                year: totalData[i].year,
-                totalPopulation: totalData[i].value,
-                totalIncrease: Math.round((100 * (totalData[i].value - totalData[i-1].value) / totalData[i-1].value) * 100) / 100, // 小数点第3位で四捨五入
-                youngPopulation: youngData[i].value,
-                youngRatio: youngData[i].rate,
-                productivePopulation: productiveData[i].value,
-                productiveRatio: productiveData[i].rate,
-                elderlyPopulation: elderlyData[i].value,
-                elderlyRatio: elderlyData[i].rate,
-              });
-            //最初のデータは前年データがないので０を入れる
-            }else{
-              demographicsTableData.push({
-                year: totalData[i].year,
-                totalPopulation: totalData[i].value,
-                totalIncrease: 0,
-                youngPopulation: youngData[i].value,
-                youngRatio: youngData[i].rate,
-                productivePopulation: productiveData[i].value,
-                productiveRatio: productiveData[i].rate,
-                elderlyPopulation: elderlyData[i].value,
-                elderlyRatio: elderlyData[i].rate,
-              });
-            }
-          }
+          
 
           c_demographics.push({
             prefName: prefName,
-            data: demographicsTableData
+            data: results.data.result.data //　人口構成のデータすべて
           });
           setDemographics(c_demographics);
         })

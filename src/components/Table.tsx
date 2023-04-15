@@ -7,15 +7,12 @@ interface Props {
   demographics: {
     prefName: string;
     data: {
-      year: number;
-      totalPopulation: number;
-      totalIncrease: number;
-      youngPopulation: number;
-      youngRatio: number;
-      productivePopulation: number;
-      productiveRatio: number;
-      elderlyPopulation: number;
-      elderlyRatio: number;
+      label: string;
+      data: {
+        year: number;
+        value: number;
+        rate?: number;
+      }[];
     }[];
   }[];
 }
@@ -63,10 +60,11 @@ const Styles: { [key: string]: React.CSSProperties } = {
 };
 
 const Table: React.FC<Props> = ({ demographics }) => {
-
-  const [sortedColumn, setSortedColumn] = useState('');
+  // ソート用state
+  const [sortedColumn, setSortedColumn] = useState('year');
   const [isAscending, setIsAscending] = useState(false);
 
+  // ソート用関数
   const toggleSort = (column: string) => {
     if (sortedColumn === column) {
       setIsAscending(!isAscending);
@@ -76,17 +74,86 @@ const Table: React.FC<Props> = ({ demographics }) => {
     }
   };
 
+  // ヘッダー情報をテーブル用に加工
+  const headers = demographics.map(({ data }) => {
+    const header: JSX.Element[] = [];
+    data.forEach((item, i) => {
+      header.push(<th key={i} colSpan={2}>{item.label}</th>);
+    });
+    return header;
+  })
+
+  // データをテーブル用に加工
   const sortedData = demographics.map(({ prefName, data }) => {
-    const sorted = [...data].sort((a: { [key: string]: number }, b: { [key: string]: number }) => {
+    let tableData: {
+      year: number,
+      totalPopulation: number,
+      totalIncrease: number,
+      youngPopulation: number,
+      youngRatio: number | undefined,
+      productivePopulation: number,
+      productiveRatio: number| undefined,
+      elderlyPopulation: number,
+      elderlyRatio: number| undefined,
+    }[] = [];
+
+    //APIから取得した年数総数(処理数)
+    let arrayNumber = data[0].data.length;
+
+    // 総人口
+    let totalData = data[0].data;
+
+     // 年少人口
+    let youngData = data[1].data;
+
+    // 生産年齢人口
+    let productiveData = data[2].data;
+
+     // 老年人口
+    let elderlyData = data[3].data;
+
+    for (let i = 0; i < arrayNumber; i++) {
+      // 前年データがある年は増加率を計算
+      if(i !== 0){
+        tableData.push({
+          year: totalData[i].year,
+          totalPopulation: totalData[i].value,
+          totalIncrease: Math.round((100 * (totalData[i].value - totalData[i-1].value) / totalData[i-1].value) * 100) / 100, // 小数点第3位で四捨五入
+          youngPopulation: youngData[i].value,
+          youngRatio: youngData[i].rate,
+          productivePopulation: productiveData[i].value,
+          productiveRatio: productiveData[i].rate,
+          elderlyPopulation: elderlyData[i].value,
+          elderlyRatio: elderlyData[i].rate,
+        });
+      //最初のデータは前年データがないので０を入れる
+      }else{
+        tableData.push({
+          year: totalData[i].year,
+          totalPopulation: totalData[i].value,
+          totalIncrease: 0,
+          youngPopulation: youngData[i].value,
+          youngRatio: youngData[i].rate,
+          productivePopulation: productiveData[i].value,
+          productiveRatio: productiveData[i].rate,
+          elderlyPopulation: elderlyData[i].value,
+          elderlyRatio: elderlyData[i].rate,
+        });
+      }
+    }
+
+    // ソート
+    const sorted = [...tableData].sort((a: { [key: string]: number | undefined}, b: { [key: string]: number| undefined }) => {
       if (isAscending) {
-        return a[sortedColumn] - b[sortedColumn];
+        return (a[sortedColumn] ?? 0) - (b[sortedColumn] ?? 0);
       } else {
-        return b[sortedColumn] - a[sortedColumn];
+        return (b[sortedColumn] ?? 0) - (a[sortedColumn] ?? 0);
       }
     });
-    return { prefName, data: sorted };
+    return { prefName, tableData: sorted };
   });
 
+   // ソート判別アイコン
 	const getSortIcon = (column: string) => {
     if (sortedColumn === column) {
       return isAscending ? <span style={Styles.sortIcon}>▲</span> : <span style={Styles.sortIcon}>▼</span>;
@@ -96,22 +163,20 @@ const Table: React.FC<Props> = ({ demographics }) => {
   };
 
   return (
-    <Tabs style={Styles.tabWidth}>
+    //onSelectはエラー回避のため
+    <Tabs selectedIndex={sortedData && sortedData.length - 1} onSelect={() => {}} style={Styles.tabWidth}>
       <TabList>
         {sortedData.map(({ prefName }) => (
           <Tab key={prefName}>{prefName}</Tab>
         ))}
       </TabList>
-			{sortedData.map(({ prefName, data }) => (
+			{sortedData.map(({ prefName, tableData }) => (
 			<TabPanel key={prefName}>
 				<table style={Styles.table}>
 					<thead style={Styles.thead}>
 						<tr style={Styles.th}>
 							<th style={Styles.thWithPointer} rowSpan={2} onClick={() => toggleSort("year")}>西暦{getSortIcon("year")}</th>
-							<th colSpan={2} >総人口</th>
-							<th colSpan={2} >年少人口</th>
-							<th colSpan={2} >生産年齢人口</th>
-							<th colSpan={2} >老年人口</th>
+              {headers}
 						</tr>
 						<tr style={Styles.thWithPointer}>
 							<th onClick={() => toggleSort("totalPopulation")}>人数(人){getSortIcon("totalPopulation")}</th>
@@ -126,7 +191,7 @@ const Table: React.FC<Props> = ({ demographics }) => {
 					</thead>
 					<tbody>
 							<React.Fragment key={prefName}>
-								{data.map((rowData) => (
+								{tableData.map((rowData) => (
 									<tr key={`${prefName}-${rowData.year}`} style={Styles.td}>
 										<td>{rowData.year}</td>
 										<td>{rowData.totalPopulation}</td>
