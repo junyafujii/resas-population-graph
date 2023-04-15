@@ -75,13 +75,22 @@ const Table: React.FC<Props> = ({ demographics }) => {
   };
 
   // ヘッダー情報をテーブル用に加工
-  const headers = demographics.map(({ data }) => {
+  // const headers = demographics.map(({ data }) => {
+  //   console.log(data);
+  //   const header: JSX.Element[] = [];
+  //   for (let i = 0; i < 4; i++) {
+  //     header.push(<th key={i} colSpan={2}>{data[i].label}</th>);
+  //   }
+  //   return header;
+  // })
+  
+  const headers = () => {
     const header: JSX.Element[] = [];
-    data.forEach((item, i) => {
-      header.push(<th key={i} colSpan={2}>{item.label}</th>);
-    });
+    for (let i = 0; i < 4; i++) {
+      header.push(<th key={i} colSpan={2}>{demographics[0].data[i].label}</th>);
+    }
     return header;
-  })
+  }
 
   // データをテーブル用に加工
   const sortedData = demographics.map(({ prefName, data }) => {
@@ -163,8 +172,7 @@ const Table: React.FC<Props> = ({ demographics }) => {
   };
 
   return (
-    //onSelectはエラー回避のため
-    <Tabs selectedIndex={sortedData && sortedData.length - 1} onSelect={() => {}} style={Styles.tabWidth}>
+    <Tabs style={Styles.tabWidth}>
       <TabList>
         {sortedData.map(({ prefName }) => (
           <Tab key={prefName}>{prefName}</Tab>
@@ -176,7 +184,7 @@ const Table: React.FC<Props> = ({ demographics }) => {
 					<thead style={Styles.thead}>
 						<tr style={Styles.th}>
 							<th style={Styles.thWithPointer} rowSpan={2} onClick={() => toggleSort("year")}>西暦{getSortIcon("year")}</th>
-              {headers}
+              {headers()}
 						</tr>
 						<tr style={Styles.thWithPointer}>
 							<th onClick={() => toggleSort("totalPopulation")}>人数(人){getSortIcon("totalPopulation")}</th>

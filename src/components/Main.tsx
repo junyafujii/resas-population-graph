@@ -6,9 +6,6 @@ import Table from "./Table";
 import axios from "axios";
 
 const Styles: { [key: string]: React.CSSProperties } = {
-  graph: {
-    padding: "10px",
-  },
   label: {
     fontSize: "20px",
     padding: "0.5rem 2rem",
