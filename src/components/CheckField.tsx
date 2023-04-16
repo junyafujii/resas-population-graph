@@ -16,7 +16,7 @@ const Styles: { [key: string]: React.CSSProperties } = {
     flexWrap: "wrap",
     padding: "10px",
     width: '100%',
-    maxWidth: '1500px',
+    maxWidth: '1600px',
     margin: 'auto',
   },
   text: { display: "contents", marginLeft: "1em", cursor: "pointer" },
